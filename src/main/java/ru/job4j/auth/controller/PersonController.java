@@ -22,20 +22,16 @@ public class PersonController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Person> findById(@PathVariable int id) {
-        var person = this.persons.findById(id);
-        return new ResponseEntity<Person>(
-                person.orElse(new Person()),
-                person.isPresent() ? HttpStatus.OK : HttpStatus.NOT_FOUND
-        );
+        return persons.findById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping("/")
     public ResponseEntity<Person> create(@RequestBody Person person) {
-        var personOptional = this.persons.save(person);
-        return new ResponseEntity<Person>(
-                personOptional.orElse(new Person()),
-                personOptional.isPresent() ? HttpStatus.CREATED : HttpStatus.CONFLICT
-        );
+        return persons.save(person)
+                .map(p -> new ResponseEntity<>(p, HttpStatus.CREATED))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.CONFLICT));
     }
 
     @PutMapping("/")
