@@ -7,4 +7,6 @@ import java.util.Collection;
 
 public interface PersonRepository extends CrudRepository<Person, Integer> {
     Collection<Person> findAll();
+
+    Person findByLogin(String login);
 }
