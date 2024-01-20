@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.job4j.auth.domain.Person;
+import ru.job4j.auth.dto.UserDto;
 import ru.job4j.auth.repository.PersonRepository;
 
 import java.util.Collection;
@@ -47,6 +48,19 @@ public class SimplePersonService implements PersonService {
             log.error("Person with this id not found");
             return false;
         }
+        repository.save(person);
+        return true;
+    }
+
+    @Override
+    public boolean updatePassword(UserDto userDto) {
+        Optional<Person> personOptional = repository.findById(userDto.getId());
+        if (personOptional.isEmpty()) {
+            log.error("Person with this id not found");
+            return false;
+        }
+        var person = personOptional.get();
+        person.setPassword(encoder.encode(userDto.getPassword()));
         repository.save(person);
         return true;
     }

@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import ru.job4j.auth.domain.Person;
+import ru.job4j.auth.dto.UserDto;
 import ru.job4j.auth.service.PersonService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -77,6 +78,15 @@ public class PersonController {
             throw new NullPointerException("Password mustn't be empty");
         }
         return persons.update(person) ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+    }
+
+    @PatchMapping("/")
+    public ResponseEntity<Void> updatePassword(@RequestBody UserDto userDto) {
+        String password = userDto.getPassword();
+        if (password == null) {
+            throw new NullPointerException("Password mustn't be empty");
+        }
+        return persons.updatePassword(userDto) ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
